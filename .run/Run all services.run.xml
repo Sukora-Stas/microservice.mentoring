@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run all services" type="CompoundRunConfigurationType">
+    <toRun name="resource-processor" type="GradleRunConfiguration" />
+    <toRun name="resource-service" type="GradleRunConfiguration" />
+    <toRun name="song-service" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>
