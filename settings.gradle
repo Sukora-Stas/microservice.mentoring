@@ -1,0 +1,13 @@
+pluginManagement {
+    plugins {
+        id 'org.springframework.boot' version '2.7.0'
+        id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+        id 'java'
+    }
+}
+
+rootProject.name = 'microservice.mentoring'
+
+include ":resource-processor"
+include ":resource-service"
+include ":song-service"

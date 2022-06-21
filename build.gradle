@@ -1,0 +1,25 @@
+subprojects {
+	apply plugin: "java"
+
+	java {
+		sourceCompatibility = 11
+		targetCompatibility = 11
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.data:spring-data-rest-hal-explorer'
+		runtimeOnly 'com.h2database:h2'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	}
+}
+
+tasks.withType(Test) {
+	useJUnitPlatform()
+}
