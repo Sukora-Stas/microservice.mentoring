@@ -7,6 +7,7 @@ import com.epam.microservice.services.TourService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,9 @@ import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
+
+    @Value("${ec.importfile}")
+    private String importFile;
 
     @Autowired
     private TourPackageService tourPackageService;
@@ -36,11 +40,8 @@ public class Application implements CommandLineRunner {
     public void run(String... args) throws Exception {
         //Create the Tour Packages
         createTourPackages();
-        long numOfPackages = tourPackageService.total();
-
         //Load the tours from an external Json File
-        createTours("ExploreCalifornia.json");
-        long numOfTours = tourService.total();
+        createTours(importFile);
     }
 
     /**
@@ -63,7 +64,8 @@ public class Application implements CommandLineRunner {
      */
     private void createTours(String fileToImport) throws IOException {
         TourFromFile.read(fileToImport).forEach(importedTour ->
-                tourService.createTour(importedTour.getTitle(),
+                tourService.createTour(
+                        importedTour.getTitle(),
                         importedTour.getDescription(),
                         importedTour.getBlurb(),
                         importedTour.getPrice(),
