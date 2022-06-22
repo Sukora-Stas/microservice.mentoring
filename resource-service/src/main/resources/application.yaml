@@ -46,7 +46,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 15MB
 
-configuration:
+cloud:
   aws:
     region: ${AWS_DEFAULT_REGION}
     s3:
