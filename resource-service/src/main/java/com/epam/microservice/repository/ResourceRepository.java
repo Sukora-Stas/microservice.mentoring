@@ -12,4 +12,6 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
 
     Boolean existsByFileName(String filename);
     List<Resource> deleteAllByIdIn(Collection<Long> ids);
+
+    List<Resource> findByStatus(String status);
 }

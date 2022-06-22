@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
@@ -71,5 +70,13 @@ public class ResourceService {
         List<Resource> resources = resourceRepository.deleteAllByIdIn(ids);
         //awsS3Service.deleteByFileKeys(resources.stream().map(Resource::getFileKey).toList());
         return resources.stream().map(Resource::getId).toArray(Long[]::new);
+    }
+
+    @Transactional
+    public List<Resource> getUnprocessedResourceIds() {
+        //var deadline = LocalDateTime.now(Clock.systemUTC()).minusMinutes(10);
+        // var outDateResources = resourceRepository.findUnprocessedResources(deadline);
+
+        return resourceRepository.findByStatus(Resource.ProcessingStatus.NONE.ordinal() + "");
     }
 }

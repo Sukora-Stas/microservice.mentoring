@@ -32,6 +32,12 @@ public class ResourceController {
         return resourceService.findAll();
     }
 
+    @GetMapping("/unprocessed")
+    public List<Resource> getUnprocessedResourceAudioBinaryData() {
+        //TODO: not requared
+        return resourceService.getUnprocessedResourceIds();
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String, Long>> create(@RequestParam("file") MultipartFile file) {
