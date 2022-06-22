@@ -3,3 +3,16 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
+
+dependencies {
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    runtimeOnly "org.postgresql:postgresql"
+    runtimeOnly "org.glassfish.jaxb:jaxb-runtime"
+
+    implementation "org.flywaydb:flyway-core"
+    implementation "com.amazonaws:aws-java-sdk:1.12.238"
+    implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+
+    testImplementation "org.testcontainers:postgresql"
+}
