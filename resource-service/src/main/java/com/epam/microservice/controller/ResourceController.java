@@ -26,7 +26,7 @@ public class ResourceController {
     private ResourceService resourceService;
 
     @GetMapping(value = "/{id}", produces = "application/octet-stream")
-    public ResponseEntity<InputStreamResource> getResource(@PathVariable Long id) throws IOException {
+    public ResponseEntity<InputStreamResource> getResource(@PathVariable Long id) {
         var resource = resourceService.findById(id);
         var stream = new InputStreamResource(resource.getData());
         return ResponseEntity.ok()

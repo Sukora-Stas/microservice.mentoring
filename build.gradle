@@ -11,12 +11,20 @@ subprojects {
 	}
 
 	dependencies {
-		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-		implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-		implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
 		implementation 'org.springframework.data:spring-data-rest-hal-explorer'
-		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+		implementation "org.springframework.boot:spring-boot-starter-web"
+
+		testImplementation "org.springframework.boot:spring-boot-starter-test"
 	}
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs = [
+			"-Xlint:unchecked",
+			"-Xlint:deprecation",
+	]
 }
 
 tasks.withType(Test) {
