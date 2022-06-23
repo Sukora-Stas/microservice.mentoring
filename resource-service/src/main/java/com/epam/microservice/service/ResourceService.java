@@ -37,7 +37,7 @@ public class ResourceService {
         var fileName = resource.getFileName();
 
         if (!StringUtils.hasLength(fileName)) {
-            throw new EntityNotFoundException("File name can't be null");
+            throw new EntityNotFoundException("Can't find file with name" + fileName);
         }
 
         S3Object awsResource;
