@@ -25,12 +25,17 @@ public class SongController {
     }
 
     @GetMapping
-    public List<Song> getAllSongs() {
-        return songService.findAll();
+    public Song getSongByResourceId(@RequestParam Long resourceId) {
+        return songService.findByResourceId(resourceId);
     }
 
+   /* @GetMapping
+    public List<Song> getAllSongs() {
+        return songService.findAll();
+    }*/
+
     @PostMapping
-    public ResponseEntity<Map<String, Long>> create(@Valid @RequestBody Song song) {
+    public ResponseEntity<Map<String, Long>> create(@RequestBody Song song) {
         return ResponseEntity.ok(Map.of("id", songService.save(song)));
     }
 

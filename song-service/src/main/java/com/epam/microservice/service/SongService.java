@@ -28,6 +28,10 @@ public class SongService {
         return songRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id));
     }
 
+    public Song findByResourceId(Long resourceId) {
+        return songRepository.findByResourceId(resourceId);
+    }
+
     public Long save(Song song) {
 
         if (songRepository.existsByResourceId(song.getResourceId())) {

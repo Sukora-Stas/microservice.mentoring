@@ -2,7 +2,6 @@ package com.epam.microservice.model;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -15,23 +14,18 @@ public class Song {
     @Column
     private Long id;
 
-    @NotBlank
     @Column
     private String name;
 
-    @NotNull
     @Column
-    private Integer year;
+    private String year;
 
-    @NotBlank
     @Column
     private String album;
 
-    @NotBlank
     @Column
     private String artist;
 
-    @NotBlank
     @Column
     private String length;
 
@@ -42,7 +36,7 @@ public class Song {
     public Song() {
     }
 
-    public Song(String name, Integer year, String album, String artist, String length, Long resourceId) {
+    public Song(String name, String year, String album, String artist, String length, Long resourceId) {
         this.name = name;
         this.year = year;
         this.album = album;
@@ -67,11 +61,11 @@ public class Song {
         this.name = name;
     }
 
-    public Integer getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Integer year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

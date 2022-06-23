@@ -2,3 +2,12 @@ plugins {
     id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
+
+dependencies {
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+
+    implementation "commons-io:commons-io:2.11.0"
+    implementation "org.apache.httpcomponents:httpclient:4.5.13"
+    implementation "org.apache.tika:tika-core:2.3.0"
+    implementation "org.apache.tika:tika-parser-audiovideo-module:2.3.0"
+}
