@@ -23,7 +23,7 @@ public class Resource implements Serializable {
     private String fileName;
 
     @Column
-    private ProcessingStatus status;
+    private String status;
 
     @CreatedDate
     @Column
@@ -33,7 +33,7 @@ public class Resource implements Serializable {
     @Column(name = ("updated"))
     private LocalDateTime modified;
 
-    public Resource(String fileName, ProcessingStatus status) {
+    public Resource(String fileName, String status) {
         this.fileName = fileName;
         this.status = status;
     }
@@ -57,11 +57,11 @@ public class Resource implements Serializable {
         this.fileName = fileName;
     }
 
-    public ProcessingStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(ProcessingStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -105,7 +105,7 @@ public class Resource implements Serializable {
                 '}';
     }
 
-   public enum ProcessingStatus {
+    public enum ProcessingStatus {
         /**
          * Indicates that the resource newly uploaded and is not processed yet.
          */

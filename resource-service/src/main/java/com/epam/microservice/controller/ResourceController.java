@@ -2,16 +2,15 @@ package com.epam.microservice.controller;
 
 import com.epam.microservice.model.Resource;
 import com.epam.microservice.service.ResourceService;
+import com.epam.microservice.service.dto.ResourceStatusDTO;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +40,7 @@ public class ResourceController {
     }
 
     @GetMapping("/unprocessed")
-    public List<Resource> getUnprocessedResourceAudioBinaryData() {
-        //TODO: not required
+    public List<Long> getUnprocessedResourceIds() {
         return resourceService.getUnprocessedResourceIds();
     }
 
@@ -50,6 +48,11 @@ public class ResourceController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String, Long>> create(@RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(Map.of("id", resourceService.saveFile(file)));
+    }
+
+    @PutMapping("/{id}")
+    public void updateResource(@PathVariable Long id, @RequestBody ResourceStatusDTO status) {
+        resourceService.updateResource(id, status);
     }
 
     @DeleteMapping(params = "ids")

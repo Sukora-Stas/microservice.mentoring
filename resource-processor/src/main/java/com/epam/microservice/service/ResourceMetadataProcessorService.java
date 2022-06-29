@@ -48,7 +48,6 @@ public class ResourceMetadataProcessorService {
                 metadata.get(XMPDM.RELEASE_DATE));
     }
 
-    //TODO: implement "find all unprocessed files" in resource client
     public SongMetadata extractAndSaveMetadata(Long resourceId) throws IOException {
         var data = resourceServiceClient.getResourceBinaryData(resourceId);
         var song = extractMetadata(resourceId, data);
@@ -57,7 +56,6 @@ public class ResourceMetadataProcessorService {
             songServiceClient.persistMetadata(song);
         }
 
-        //TODO: implement status layer
         return song;
     }
 

@@ -17,6 +17,11 @@ services:
     container_name: resource-service-db
     ports:
       - "5433:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - resource-service-db-data:/var/lib/postgresql/data
     env_file:
@@ -31,6 +36,17 @@ services:
       - song-service-db-data:/var/lib/postgresql/data
     env_file:
       - song-service/.env.local
+
+  resource-service:
+    container_name: resource-service-app
+    build: resource-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      resource-service-db:
+        condition: service_healthy
+    env_file:
+      - resource-service/.env.local
 
 volumes:
   resource-service-db-data:

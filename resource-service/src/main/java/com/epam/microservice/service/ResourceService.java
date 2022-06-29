@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.epam.microservice.model.Resource;
 import com.epam.microservice.repository.ResourceRepository;
 import com.epam.microservice.service.dto.ResourceDTO;
+import com.epam.microservice.service.dto.ResourceStatusDTO;
 import com.epam.microservice.service.exceptions.EntityDuplicateException;
 import com.epam.microservice.service.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,8 +66,7 @@ public class ResourceService {
         awsS3Service.saveFile(file);
         Resource resource = resourceRepository.save(
                 new Resource(fileName,
-                        Resource.ProcessingStatus.NONE));
-        resourceRepository.save(resource);
+                        Resource.ProcessingStatus.NONE.name()));
 
         return resource.getId();
     }
@@ -84,10 +86,29 @@ public class ResourceService {
     }
 
     @Transactional
-    public List<Resource> getUnprocessedResourceIds() {
-        //var deadline = LocalDateTime.now(Clock.systemUTC()).minusMinutes(10);
-        // var outDateResources = resourceRepository.findUnprocessedResources(deadline);
+    public List<Long> getUnprocessedResourceIds() {
+        var resources = resourceRepository.findByStatus(Resource.ProcessingStatus.NONE.name());
 
-        return resourceRepository.findByStatus(Resource.ProcessingStatus.NONE.ordinal() + "");
+        if (!resources.isEmpty()) {
+            var ids = new ArrayList<Long>();
+            for (Resource resource : resources) {
+                ids.add(resource.getId());
+                resource.setStatus(Resource.ProcessingStatus.PENDING.name());
+            }
+            resourceRepository.saveAll(resources);
+            return ids;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Transactional
+    public void updateResource(Long id, ResourceStatusDTO status) {
+        var resource = resourceRepository.findById(id).orElseThrow(()
+                -> new EntityNotFoundException(id));
+
+        resource.setStatus(Resource.ProcessingStatus.valueOf(status.getStatus()).name());
+
+        resourceRepository.save(resource);
     }
 }
