@@ -1,32 +1,23 @@
 package com.epam.microservice.client;
 
 import com.epam.microservice.model.SongMetadata;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-@Service
-public class SongServiceClient {
+import java.util.Map;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${configuration.song-service-url}")
-    private String songServiceUrl;
-
-    public boolean songMetadataExists(Long resourceId) {
-        var result = restTemplate.exchange(
-                songServiceUrl + "?resourceId=" + resourceId,
-                HttpMethod.GET,
-                null,
-                SongMetadata.class);
-        return result.getBody() != null;
-    }
-
-    public void persistMetadata(SongMetadata songMetadata) {
-        restTemplate.postForObject(
-                songServiceUrl,
-                songMetadata,
-                String.class);
-    }
+@FeignClient(name = "song-service", url = "${configuration.song-service.url}")
+public interface SongServiceClient {
+    @Retryable(
+            value = RuntimeException.class,
+            maxAttemptsExpression = "${configuration.song-service.request.retries-count}",
+            backoff =
+            @Backoff(
+                    delayExpression = "${configuration.song-service.request.base-retry-delay}",
+                    maxDelayExpression = "${configuration.song-service.request.max-retry-delay}",
+                    multiplierExpression = "${configuration.song-service.request.retry-delay-multiplier}"))
+    @PostMapping
+    Map<String, Long> saveSong(SongMetadata songMetadata);
 }

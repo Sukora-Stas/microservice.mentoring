@@ -23,7 +23,7 @@ public class RabbitTemplateReturnCallback implements RabbitTemplate.ReturnsCallb
                 .findById(resourceId)
                 .ifPresentOrElse(
                         resource -> {
-                            resource.setSent(0);
+                            resource.setSent(1);
                             resourceRepository.save(resource);
                         },
                         () ->
