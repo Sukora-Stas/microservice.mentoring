@@ -18,7 +18,5 @@ dependencies {
 
     testImplementation "org.testcontainers:postgresql"
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
-
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.awaitility:awaitility:3.0.0'
 }

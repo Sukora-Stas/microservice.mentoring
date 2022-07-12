@@ -1,0 +1,43 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    exchange-name: resource-created-exchange
+    queue-name: resource-created-queue
+    dead-letter-queue-name: resource-created-dead-letter-queue
+    dead-letter-queue-ttl: 60000
+    dead-letter-exchange-name: resource-created-dead-letter-exchange
+    parking-lot-queue-name: resource-created-parking-lot-queue
+    parking-lot-exchange-name: resource-created-parking-lot-exchange
+    dead-letter-max-deaths-count: 5
+  listener:
+    simple:
+      retry:
+        enabled: true
+        initial-interval: 5s
+        max-attempts: 2
+        max-interval: 5s
+        multiplier: 1
+  resource-service:
+    url: http://localhost:8081/
+    request:
+      retries-count: 2
+      base-retry-delay: 5000
+      max-retry-delay: 5000
+      retry-delay-multiplier: 1
+  song-service:
+    url: http://localhost:8082/
+    request:
+      retries-count: 2
+      base-retry-delay: 5000
+      max-retry-delay: 5000
+      retry-delay-multiplier: 1
+  stubrunner:
+    amqp:
+      enabled: true
+    stream:
+      enabled: false
+
+
