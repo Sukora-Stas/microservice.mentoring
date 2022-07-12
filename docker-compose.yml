@@ -37,16 +37,28 @@ services:
     env_file:
       - song-service/.env.local
 
-  resource-service:
-    container_name: resource-service-app
-    build: resource-service
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
     ports:
-      - "8081:8081"
-    depends_on:
-      resource-service-db:
-        condition: service_healthy
-    env_file:
-      - resource-service/.env.local
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+#  resource-service:
+#    container_name: resource-service-app
+#    build: resource-service
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      resource-service-db:
+#        condition: service_healthy
+#    env_file:
+#      - resource-service/.env.local
 
 volumes:
   resource-service-db-data:

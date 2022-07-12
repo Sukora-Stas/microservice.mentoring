@@ -5,10 +5,9 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.epam.microservice.model.Resource;
 import com.epam.microservice.repository.ResourceRepository;
 import com.epam.microservice.service.dto.ResourceDTO;
-import com.epam.microservice.service.dto.ResourceStatusDTO;
 import com.epam.microservice.service.exceptions.EntityDuplicateException;
 import com.epam.microservice.service.exceptions.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,16 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ResourceService {
 
     private final ResourceRepository resourceRepository;
     private final AwsS3Service awsS3Service;
-
-    @Autowired
-    public ResourceService(ResourceRepository resourceRepository, AwsS3Service awsS3Service) {
-        this.resourceRepository = resourceRepository;
-        this.awsS3Service = awsS3Service;
-    }
+    private final ResourceCreatedQueueProducerService resourceCreatedQueueProducerService;
 
     @Transactional
     public ResourceDTO findById(Long id) {
@@ -63,10 +58,12 @@ public class ResourceService {
             throw new EntityDuplicateException(fileName);
         }
 
+        Resource resource = new Resource();
+        resource.setFileName(fileName);
+
         awsS3Service.saveFile(file);
-        Resource resource = resourceRepository.save(
-                new Resource(fileName,
-                        Resource.ProcessingStatus.NONE.name()));
+        resource = resourceRepository.save(resource);
+        resourceCreatedQueueProducerService.produce(resource.getId());
 
         return resource.getId();
     }
@@ -87,13 +84,12 @@ public class ResourceService {
 
     @Transactional
     public List<Long> getUnprocessedResourceIds() {
-        var resources = resourceRepository.findByStatus(Resource.ProcessingStatus.NONE.name());
+        var resources = resourceRepository.findAllBySent(0);
 
         if (!resources.isEmpty()) {
             var ids = new ArrayList<Long>();
             for (Resource resource : resources) {
                 ids.add(resource.getId());
-                resource.setStatus(Resource.ProcessingStatus.PENDING.name());
             }
             resourceRepository.saveAll(resources);
             return ids;
@@ -103,11 +99,11 @@ public class ResourceService {
     }
 
     @Transactional
-    public void updateResource(Long id, ResourceStatusDTO status) {
+    public void updateResource(Long id) {
         var resource = resourceRepository.findById(id).orElseThrow(()
                 -> new EntityNotFoundException(id));
 
-        resource.setStatus(Resource.ProcessingStatus.valueOf(status.getStatus()).name());
+        resource.setSent(1);
 
         resourceRepository.save(resource);
     }
