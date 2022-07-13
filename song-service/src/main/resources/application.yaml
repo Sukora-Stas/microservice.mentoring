@@ -31,7 +31,7 @@ spring:
       platform: postgres
   datasource:
     driverClassName: org.postgresql.Driver
-    url: ${JDBC_DATABASE_URL}
+    url: ${JDBC_DOCKER_DATABASE_URL:JDBC_LOCAL_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
     hikari:

@@ -19,7 +19,7 @@ services:
       - "5433:5432"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
-      interval: 10s
+      interval: 100s
       timeout: 5s
       retries: 5
     volumes:
@@ -32,11 +32,15 @@ services:
     container_name: song-service-db
     ports:
       - "5434:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 100s
+      timeout: 5s
+      retries: 5
     volumes:
       - song-service-db-data:/var/lib/postgresql/data
     env_file:
       - song-service/.env.local
-
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
@@ -49,17 +53,36 @@ services:
       timeout: 30s
       retries: 3
 
-#  resource-service:
-#    container_name: resource-service-app
-#    build: resource-service
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      resource-service-db:
-#        condition: service_healthy
-#    env_file:
-#      - resource-service/.env.local
-
+  resource-service:
+    container_name: resource-service-app
+    build: resource-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      resource-service-db:
+        condition: service_healthy
+    env_file:
+      - resource-service/.env.local
+  song-service:
+    container_name: song-service-app
+    build: song-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      song-service-db:
+        condition: service_healthy
+    env_file:
+      - song-service/.env.local
+  resource-processor:
+    container_name: resource-processor-app
+    build: resource-processor
+    ports:
+      - "8083:8083"
+    env_file:
+      - resource-processor/.env.local
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 volumes:
   resource-service-db-data:
     driver: local
