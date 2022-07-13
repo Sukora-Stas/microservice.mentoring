@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "org.sonarqube" version "3.4.0.2513"
 }
 
 dependencies {
@@ -14,4 +15,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "microservices"
+        //property 'sonar.organization', 'epam'
+        property 'sonar.host.url', 'http://localhost:9000'
+        property 'sonar.login', 'sqp_cc7a584c6b06b6678fbd07f04f931e4fe64609bf'
+
+    }
 }
